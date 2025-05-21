@@ -49,11 +49,18 @@
 </script>
 
 <div class="relative my-4 border border-gray-300 dark:border-gray-700 rounded-md overflow-hidden">
-	<div class="flex items-center justify-between px-3 py-2 bg-gray-100 dark:bg-gray-800 text-sm font-mono">
+	<div
+		class="flex items-center justify-between px-3 py-2 bg-gray-100 dark:bg-gray-800 text-sm font-mono"
+	>
 		<span class="text-gray-600 dark:text-gray-300">{lang}</span>
 		<div class="flex gap-2">
 			{#if run}
-				<button class="hover:text-green-600" on:click={handleRun} disabled={executing} title="Exécuter">
+				<button
+					class="hover:text-green-600"
+					on:click={handleRun}
+					disabled={executing}
+					title="Exécuter"
+				>
 					▶️
 				</button>
 			{/if}
@@ -73,7 +80,7 @@
 	</div>
 
 	<div class="bg-black text-white p-2 text-sm font-mono">
-		<CodeEditor code={_code} lang={lang} readOnly={false} on:edit={(e) => handleEdit(e.detail)} />
+		<CodeEditor code={_code} {lang} readOnly={false} on:edit={(e) => handleEdit(e.detail)} />
 	</div>
 
 	{#if executing}
