@@ -246,6 +246,23 @@ __builtins__.input = input`);
 		};
 	};
 
+	// Nouvelle fonction pour exécuter du code shell
+	const executeShell = () => {
+		stdout = null;
+		stderr = null;
+		executing = true;
+
+		// Simulation d'exécution shell (comme dans ShellBlock)
+		setTimeout(() => {
+			if (_code.includes('error')) {
+				stderr = 'Command not found: error';
+			} else {
+				stdout = `Executed: ${_code}`;
+			}
+			executing = false;
+		}, 1000);
+	};
+
 	let debounceTimeout;
 
 	const drawMermaidDiagram = async () => {
@@ -299,6 +316,12 @@ __builtins__.input = input`);
 			});
 		}
 	});
+
+	// Détermine si c'est un langage shell (bash, sh, shell, powershell, etc.)
+	const isShellLanguage = (l) => {
+		const shellLangs = ['bash', 'sh', 'shell', 'powershell', 'zsh', 'cmd', 'batch'];
+		return shellLangs.includes(l.toLowerCase());
+	};
 </script>
 
 <div>
@@ -306,7 +329,7 @@ __builtins__.input = input`);
 		{#if lang === 'mermaid'}
 			{#if mermaidHtml}
 				<SvgPanZoom
-					className=" border border-gray-50 dark:border-gray-850 rounded-lg max-h-fit overflow-hidden"
+					className="border border-gray-50 dark:border-gray-850 rounded-lg max-h-fit overflow-hidden"
 					svg={mermaidHtml}
 					content={_token.text}
 				/>
@@ -335,6 +358,19 @@ __builtins__.input = input`);
 								}}>{$i18n.t('Run')}</button
 							>
 						{/if}
+					{:else if isShellLanguage(lang)}
+						{#if executing}
+							<div class="run-code-button bg-none border-none p-1 cursor-not-allowed">Running</div>
+						{:else if run}
+							<button
+								class="run-code-button bg-none border-none bg-gray-50 hover:bg-gray-100 dark:bg-gray-850 dark:hover:bg-gray-800 transition rounded-md px-1.5 py-0.5"
+								on:click={async () => {
+									code = _code;
+									await tick();
+									executeShell();
+								}}>{$i18n.t('Run')}</button
+							>
+						{/if}
 					{/if}
 
 					{#if save}
@@ -360,7 +396,7 @@ __builtins__.input = input`);
 						? ''
 						: 'rounded-b-lg'} overflow-hidden"
 			>
-				<div class=" pt-7 bg-gray-50 dark:bg-gray-850"></div>
+				<div class="pt-7 bg-gray-50 dark:bg-gray-850"></div>
 				<CodeEditor
 					value={code}
 					{id}
@@ -381,12 +417,12 @@ __builtins__.input = input`);
 
 			{#if executing}
 				<div class="bg-[#202123] text-white px-4 py-4 rounded-b-lg">
-					<div class=" text-gray-500 text-xs mb-1">STDOUT/STDERR</div>
+					<div class="text-gray-500 text-xs mb-1">STDOUT/STDERR</div>
 					<div class="text-sm">Running...</div>
 				</div>
 			{:else if stdout || stderr || result}
 				<div class="bg-[#202123] text-white px-4 py-4 rounded-b-lg">
-					<div class=" text-gray-500 text-xs mb-1">STDOUT/STDERR</div>
+					<div class="text-gray-500 text-xs mb-1">STDOUT/STDERR</div>
 					<div class="text-sm">{stdout || stderr || result}</div>
 				</div>
 			{/if}

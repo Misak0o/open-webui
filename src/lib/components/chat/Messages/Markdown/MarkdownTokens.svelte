@@ -12,7 +12,6 @@
 	import { WEBUI_BASE_URL } from '$lib/constants';
 
 	import CodeBlock from '$lib/components/chat/Messages/CodeBlock.svelte';
-  import ShellBlock from '$lib/components/chat/Messages/ShellBlock.svelte';
 	import MarkdownInlineTokens from '$lib/components/chat/Messages/Markdown/MarkdownInlineTokens.svelte';
 	import KatexRenderer from './KatexRenderer.svelte';
 	import Collapsible from '$lib/components/common/Collapsible.svelte';
@@ -77,41 +76,24 @@
 		<svelte:element this={headerComponent(token.depth)}>
 			<MarkdownInlineTokens id={`${id}-${tokenIdx}-h`} tokens={token.tokens} {onSourceClick} />
 		</svelte:element>
-    {:else if token.type === 'code'}
-      {#if token?.lang === 'bash' || token?.lang === 'shell'}
-        <ShellBlock
-          id={`${id}-${tokenIdx}`}
-          code={revertSanitizedResponseContent(token?.text ?? '')}
-          lang={token?.lang}
-          save={save}
-          on:code={(e) => dispatch('code', e.detail)}
-          on:save={(e) =>
-            dispatch('update', {
-              raw: token.raw,
-              oldcontent: token.text,
-              newcontent: e.detail
-            })
-          }
-        />
-      {:else}
-        <CodeBlock
-          id={`${id}-${tokenIdx}`}
-          {token}
-          lang={token?.lang ?? ''}
-          code={revertSanitizedResponseContent(token?.text ?? '')}
-          {save}
-          on:code={(e) => {
-            dispatch('code', e.detail);
-          }}
-          on:save={(e) => {
-            dispatch('update', {
-              raw: token.raw,
-              oldcontent: token.text,
-              newcontent: e.detail
-            });
-          }}
-        />
-      {/if}
+  {:else if token.type === 'code'}
+    <CodeBlock
+      id={`${id}-${tokenIdx}`}
+      {token}
+      lang={token?.lang ?? ''}
+      code={revertSanitizedResponseContent(token?.text ?? '')}
+      {save}
+      on:code={(e) => {
+        dispatch('code', e.detail);
+      }}
+      on:save={(e) => {
+        dispatch('update', {
+          raw: token.raw,
+          oldcontent: token.text,
+          newcontent: e.detail
+        });
+      }}
+    />
 	{:else if token.type === 'table'}
 		<div class="relative w-full group">
 			<div class="scrollbar-hidden relative overflow-x-auto max-w-full rounded-lg">
