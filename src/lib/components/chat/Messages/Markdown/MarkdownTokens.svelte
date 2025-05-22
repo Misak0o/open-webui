@@ -76,24 +76,24 @@
 		<svelte:element this={headerComponent(token.depth)}>
 			<MarkdownInlineTokens id={`${id}-${tokenIdx}-h`} tokens={token.tokens} {onSourceClick} />
 		</svelte:element>
-  {:else if token.type === 'code'}
-    <CodeBlock
-      id={`${id}-${tokenIdx}`}
-      {token}
-      lang={token?.lang ?? ''}
-      code={revertSanitizedResponseContent(token?.text ?? '')}
-      {save}
-      on:code={(e) => {
-        dispatch('code', e.detail);
-      }}
-      on:save={(e) => {
-        dispatch('update', {
-          raw: token.raw,
-          oldcontent: token.text,
-          newcontent: e.detail
-        });
-      }}
-    />
+	{:else if token.type === 'code'}
+		<CodeBlock
+			id={`${id}-${tokenIdx}`}
+			{token}
+			lang={token?.lang ?? ''}
+			code={revertSanitizedResponseContent(token?.text ?? '')}
+			{save}
+			on:code={(e) => {
+				dispatch('code', e.detail);
+			}}
+			on:save={(e) => {
+				dispatch('update', {
+					raw: token.raw,
+					oldcontent: token.text,
+					newcontent: e.detail
+				});
+			}}
+		/>
 	{:else if token.type === 'table'}
 		<div class="relative w-full group">
 			<div class="scrollbar-hidden relative overflow-x-auto max-w-full rounded-lg">
