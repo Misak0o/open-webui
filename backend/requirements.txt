@@ -95,8 +95,10 @@ google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
 
-## Tests
+# Docker Executuion
 docker~=7.1.0
+
+## Tests
 pytest~=8.3.2
 pytest-docker~=3.1.1
 

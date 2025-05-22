@@ -73,6 +73,7 @@ from open_webui.routers import (
     tools,
     users,
     utils,
+    docker_execute,
 )
 
 from open_webui.routers.retrieval import (
@@ -1138,6 +1139,8 @@ async def get_manifest_json():
         ],
     }
 
+@app.get("/docker_execute/{docker_cmd}")
+async def 
 
 @app.get("/opensearch.xml")
 async def get_opensearch_xml():
