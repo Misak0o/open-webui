@@ -246,13 +246,11 @@ __builtins__.input = input`);
 		};
 	};
 
-	// Nouvelle function pour exécuter du code shell
 	const executeShell = () => {
 		stdout = null;
 		stderr = null;
 		executing = true;
 
-		// Simulation d'exécution shell (comme dans ShellBlock)
 		setTimeout(() => {
 			if (_code.includes('error')) {
 				stderr = 'Command not found: error';
@@ -317,8 +315,7 @@ __builtins__.input = input`);
 		}
 	});
 
-	// Détermine si c'est un language shell (bash, sh, shell, powershell, etc.)
-	const isShellLanguage = (l) => {
+	const isShellLanguage = (l : string) => {
 		const shellLangs = ['bash', 'sh', 'shell', 'powershell', 'zsh', 'cmd', 'batch'];
 		return shellLangs.includes(l.toLowerCase());
 	};
