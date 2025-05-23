@@ -246,19 +246,32 @@ __builtins__.input = input`);
 		};
 	};
 
-	const executeShell = () => {
+	const executeShell = async () => {
 		stdout = null;
 		stderr = null;
 		executing = true;
-
-		setTimeout(() => {
-			if (_code.includes('error')) {
-				stderr = 'Command not found: error';
-			} else {
-				stdout = `Executed: ${_code}`;
-			}
-			executing = false;
-		}, 1000);
+    try {
+      const response = await fetch('/docker_execute/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "command": _code }),
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        stdout = result.stdout //|| `Executed: ${_code}`;
+        stderr = result.stderr || null;
+      } else {
+        stderr = result.error || 'Erreur lors de l\'exécution';
+      }
+    } catch (error) {
+      stderr = `Erreur de connexion: ${error}`;
+    } finally {
+      executing = false;
+    }
 	};
 
 	let debounceTimeout;

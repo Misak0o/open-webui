@@ -1148,9 +1148,22 @@ async def execute_command(command: DockerCommand):
     try:
         docker = docker_execute.DockerService()
         result, duration = await docker.execute_command(command.command)
-        return result, duration
+
+        return {
+            "stdout": result.get("stdout", "") if isinstance(result, dict) else str(result),
+            "stderr": result.get("stderr", "") if isinstance(result, dict) else "",
+            "duration": duration,
+            "returncode": result.get("returncode", 0) if isinstance(result, dict) else 0
+        }
+        
     except Exception as e:
-        raise HTTPException(500, e)
+        return {
+            "error": str(e),
+            "stdout": "",
+            "stderr": str(e),
+            "duration": 0,
+            "returncode": -1
+        }
 
 
 @app.get("/opensearch.xml")
