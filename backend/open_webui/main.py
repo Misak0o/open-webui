@@ -1139,8 +1139,19 @@ async def get_manifest_json():
         ],
     }
 
-@app.get("/docker_execute/{docker_cmd}")
-async def 
+class DockerCommand(BaseModel):
+    command: str
+
+
+@app.post("/docker_execute/")
+async def execute_command(command: DockerCommand):
+    try:
+        docker = docker_execute.DockerService()
+        result, duration = await docker.execute_command(command.command)
+        return result, duration
+    except Exception as e:
+        raise HTTPException(500, e)
+
 
 @app.get("/opensearch.xml")
 async def get_opensearch_xml():
